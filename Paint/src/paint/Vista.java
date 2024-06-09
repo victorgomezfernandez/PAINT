@@ -6,9 +6,9 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
 import javax.swing.text.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import javax.swing.DefaultListModel;
 
 public class Vista extends javax.swing.JFrame implements MouseListener {
@@ -16,11 +16,13 @@ public class Vista extends javax.swing.JFrame implements MouseListener {
     Controlador pc;
 
     public ArrayList<Point> clickedPoints;
+    public LinkedList<Figura> figuresToDraw;
     public boolean drawingIrregular = false;
     DefaultListModel<String> drawingsModel;
 
     public Vista(Controlador pc) {
         initComponents();
+        notFill();
         notSelectedPolygon();
         fillChanged();
         ((AbstractDocument) lineRField.getDocument()).setDocumentFilter(new onlyInt());
@@ -81,7 +83,7 @@ public class Vista extends javax.swing.JFrame implements MouseListener {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         titleLabel.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
-        titleLabel.setText("PAINT EN JAVA");
+        titleLabel.setText("PAINT");
 
         figuresList.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Punto", "Recta", "Circunferencia", "Polígono regular", "Polígono irregular" };
@@ -272,6 +274,11 @@ public class Vista extends javax.swing.JFrame implements MouseListener {
         });
 
         drawButton.setText("DIBUJAR SELECCIONADO");
+        drawButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                drawButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -335,14 +342,13 @@ public class Vista extends javax.swing.JFrame implements MouseListener {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(drawingField)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addComponent(drawButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(addButton)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(deleteButton))
-                        .addComponent(generateButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(drawButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(addButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(deleteButton))
+                    .addComponent(generateButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -486,8 +492,8 @@ public class Vista extends javax.swing.JFrame implements MouseListener {
                         g.drawOval(x - radius, y - radius, 2 * radius, 2 * radius);
                         String fColor = "";
                         if (fill) {
-                            g.setColor(new Color(fillR, fillG, fillB));
-                            fColor = String.valueOf(" rgba(" + fillR + "," + fillG + "," + fillB + ")");
+                            g.setColor(new Color(fillR, fillG, fillB, 255));
+                            fColor = String.valueOf(" rgba(" + fillR + "," + fillG + "," + fillB + "," + 255 + ")");
                         } else {
                             g.setColor(new Color(0, 0, 0, 0));
                             fColor = String.valueOf(" rgba(" + fillR + "," + fillG + "," + fillB + ",0)");
@@ -532,8 +538,8 @@ public class Vista extends javax.swing.JFrame implements MouseListener {
         }
         String fColor = "";
         if (fill) {
-            g.setColor(new Color(fillR, fillG, fillB));
-            fColor = String.valueOf(" rgba(" + fillR + "," + fillG + "," + fillB + ")");
+            g.setColor(new Color(fillR, fillG, fillB, 255));
+            fColor = String.valueOf(" rgba(" + fillR + "," + fillG + "," + fillB + "," + 255 + ")");
         } else {
             g.setColor(new Color(0, 0, 0, 0));
             fColor = String.valueOf(" rgba(" + fillR + "," + fillG + "," + fillB + ",0)");
@@ -564,8 +570,8 @@ public class Vista extends javax.swing.JFrame implements MouseListener {
             yPoints[i] = clickedPoints.get(i).y;
         }
         if (fill) {
-            g.setColor(new Color(fillR, fillG, fillB));
-            fColor = String.valueOf(" rgba(" + fillR + "," + fillG + "," + fillB + ")");
+            g.setColor(new Color(fillR, fillG, fillB, 255));
+            fColor = String.valueOf(" rgba(" + fillR + "," + fillG + "," + fillB + "," + 255 + ")");
             g.fillPolygon(xPoints, yPoints, clickedPoints.size());
         } else {
             fColor = String.valueOf(" rgba(" + fillR + "," + fillG + "," + fillB + ",0)");
@@ -615,6 +621,11 @@ public class Vista extends javax.swing.JFrame implements MouseListener {
 
     private void figuresListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_figuresListValueChanged
         selectedFigure = figuresList.getSelectedValue();
+        if ((selectedFigure == "Punto") || (selectedFigure == "Recta")) {
+            notFill();
+        } else {
+            yesFill();
+        }
         if ((selectedFigure == "Polígono regular") || (selectedFigure == "Polígono irregular")) {
             selectedPolygon();
         } else {
@@ -674,7 +685,7 @@ public class Vista extends javax.swing.JFrame implements MouseListener {
     }//GEN-LAST:event_clearButtonActionPerformed
 
     private void generateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateButtonActionPerformed
-        if (!figuresList.isSelectionEmpty()) {
+        if (!drawingsList.isSelectionEmpty()) {
             String nombreSeleccionado = this.drawingsList.getSelectedValue();
             this.pc.generateSvgCode(nombreSeleccionado);
         }
@@ -706,6 +717,57 @@ public class Vista extends javax.swing.JFrame implements MouseListener {
         }
     }//GEN-LAST:event_deleteButtonActionPerformed
 
+    private void drawButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_drawButtonActionPerformed
+        String nombre = drawingsList.getSelectedValue();
+        this.figuresToDraw = this.pc.getFiguresToDraw(nombre);
+        Graphics g = figureCanvas.getGraphics();
+        for (Object figura : figuresToDraw) {
+            if (figura instanceof Recta recta) {
+                int rLr = recta.lineR;
+                int rLg = recta.lineG;
+                int rLb = recta.lineB;
+                int rSx = recta.startX;
+                int rSy = recta.startY;
+                int rEx = recta.endX;
+                int rEy = recta.endY;
+                g.setColor(new Color(rLr, rLg, rLb));
+                g.drawLine(rSx, rSy, rEx, rEy);
+            }
+            if (figura instanceof Circunferencia circunferencia) {
+                int cX = circunferencia.x;
+                int cY = circunferencia.y;
+                int cRadius = circunferencia.radius;
+                int cLr = circunferencia.lineR;
+                int cLg = circunferencia.lineG;
+                int cLb = circunferencia.lineB;
+                int cFr = circunferencia.fillR;
+                int cFg = circunferencia.fillG;
+                int cFb = circunferencia.fillB;
+                int cFa = circunferencia.fillA;
+                g.setColor(new Color(cLr, cLg, cLb));
+                g.drawOval(cX - cRadius, cY - cRadius, 2 * cRadius, 2 * cRadius);
+                g.setColor(new Color(cFr, cFg, cFb, cFa));
+                g.fillOval(cX - cRadius, cY - cRadius, 2 * cRadius, 2 * cRadius);
+            }
+            if (figura instanceof Poligono poligono) {
+                int[] pointsX = poligono.pointsX;
+                int[] pointsY = poligono.pointsY;
+                int pLr = poligono.lineR;
+                int pLg = poligono.lineG;
+                int pLb = poligono.lineB;
+                int pFr = poligono.fillR;
+                int pFg = poligono.fillG;
+                int pFb = poligono.fillB;
+                int pFa = poligono.fillA;
+                int nPoints = poligono.nVertices;
+                g.setColor(new Color(pLr,pLg,pLb));
+                g.drawPolygon(pointsX, pointsY, nPoints);
+                g.setColor(new Color(pFr,pFg,pFb,pFa));
+                g.fillPolygon(pointsX, pointsY, nPoints);
+            }
+        }
+    }//GEN-LAST:event_drawButtonActionPerformed
+
     public void fillChanged() {
         fillLabel.setVisible(fill);
         fillRSlider.setVisible(fill);
@@ -717,6 +779,14 @@ public class Vista extends javax.swing.JFrame implements MouseListener {
         fillGField.setVisible(fill);
         fillBLabel.setVisible(fill);
         fillBField.setVisible(fill);
+    }
+
+    public void notFill() {
+        fillCheck.setVisible(false);
+    }
+
+    public void yesFill() {
+        fillCheck.setVisible(true);
     }
 
     public void selectedPolygon() {
