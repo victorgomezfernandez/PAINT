@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600">
+<polygon points="195,122 151,257 16,213 60,78" stroke=" rgb(0,0,0)" fill=" rgba(0,0,0,255)"/>
+<polygon points="283,223 150,354 306,470 490,327 466,213 404,271" stroke=" rgb(0,0,0)" fill=" rgba(0,255,0,255)"/>
+<circle cx="93" cy="398" r="79" stroke=" rgb(255,0,0)" fill=" rgba(0,0,255,255)" />
+<line x1="7" y1="385" x2="511" y2="382" stroke=" rgb(255,255,255)" />
+<circle cx="339" cy="79" r="106" stroke=" rgb(255,255,255)" fill=" rgba(0,0,255,255)" />
+</svg>

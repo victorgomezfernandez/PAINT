@@ -135,13 +135,13 @@ public class Modelo {
         String svgCode = "";
         obtenerFiguras(nombre);
         for (Object figura : listaFiguras) {
-            svgCode+=figura;
+            svgCode += figura;
         }
         this.listaFiguras.clear();
         return svgCode;
     }
-    
-    public LinkedList obtenerFiguras (String nombre) {
+
+    public LinkedList obtenerFiguras(String nombre) {
         int idDibujoActual = obtenerIdSeleccionado(nombre);
         this.listaFiguras.clear();
         try {
@@ -169,7 +169,7 @@ public class Modelo {
                 int cO = rs.getInt(6);
                 listaFiguras.add(new Circunferencia(cX, cY, cR, cLc, cFc, cO));
             }
-            comando = "SELECT id,lColor,fColor,nVertices,orden FROM `poligonos` WHERE `id_dibujo` = " + idDibujoActual + ";";
+            comando = "SELECT id, lColor, fColor, nVertices, orden FROM poligonos WHERE id_dibujo = " + idDibujoActual + ";";
             rs = s.executeQuery(comando);
             while (rs.next()) {
                 int pId = rs.getInt(1);
@@ -179,27 +179,30 @@ public class Modelo {
                 int pO = rs.getInt(5);
                 int[] pointsX = new int[pNv];
                 int[] pointsY = new int[pNv];
-                comando = "SELECT x,y FROM `vertices` WHERE `id_poligono` = " + pId + ";";
-                System.out.println(idDibujoActual+","+pId);
-                rs = s.executeQuery(comando);
+                Statement vertexStatement = con.createStatement();
+                String vertexQuery = "SELECT x, y FROM vertices WHERE id_poligono = " + pId + ";";
+                ResultSet vertexRs = vertexStatement.executeQuery(vertexQuery);
                 int secuencia = 0;
-                while (rs.next()) {
-                    pointsX[secuencia] = rs.getInt(1);
-                    pointsY[secuencia] = rs.getInt(2);
+                while (vertexRs.next()) {
+                    pointsX[secuencia] = vertexRs.getInt(1);
+                    pointsY[secuencia] = vertexRs.getInt(2);
                     secuencia++;
                 }
                 listaFiguras.add(new Poligono(pointsX, pointsY, pLc, pFc, pNv, pO));
+                vertexRs.close();
+                vertexStatement.close();
             }
+            rs.close();
+            s.close();
             con.close();
         } catch (SQLException ex) {
             System.out.println(ex);
         }
-        
         listaFiguras = ordenarLista(listaFiguras);
         return listaFiguras;
     }
-    
-    public LinkedList ordenarLista (LinkedList listaFiguras){
+
+    public LinkedList ordenarLista(LinkedList listaFiguras) {
         Collections.sort(listaFiguras, new Comparator<Figura>() {
             @Override
             public int compare(Figura f1, Figura f2) {

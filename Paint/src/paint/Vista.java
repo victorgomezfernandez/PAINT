@@ -732,6 +732,7 @@ public class Vista extends javax.swing.JFrame implements MouseListener {
                 int rEy = recta.endY;
                 g.setColor(new Color(rLr, rLg, rLb));
                 g.drawLine(rSx, rSy, rEx, rEy);
+                this.pc.drawLine(startX, startY, endX, endY, recta.lColor);
             }
             if (figura instanceof Circunferencia circunferencia) {
                 int cX = circunferencia.x;
@@ -748,6 +749,7 @@ public class Vista extends javax.swing.JFrame implements MouseListener {
                 g.drawOval(cX - cRadius, cY - cRadius, 2 * cRadius, 2 * cRadius);
                 g.setColor(new Color(cFr, cFg, cFb, cFa));
                 g.fillOval(cX - cRadius, cY - cRadius, 2 * cRadius, 2 * cRadius);
+                this.pc.drawCircle(cX, cY, cRadius, circunferencia.lColor, circunferencia.fColor);
             }
             if (figura instanceof Poligono poligono) {
                 int[] pointsX = poligono.pointsX;
@@ -764,6 +766,7 @@ public class Vista extends javax.swing.JFrame implements MouseListener {
                 g.drawPolygon(pointsX, pointsY, nPoints);
                 g.setColor(new Color(pFr,pFg,pFb,pFa));
                 g.fillPolygon(pointsX, pointsY, nPoints);
+                this.pc.drawPolygon(pointsX, pointsY, poligono.lColor, poligono.fColor, nPoints);
             }
         }
     }//GEN-LAST:event_drawButtonActionPerformed
@@ -783,10 +786,30 @@ public class Vista extends javax.swing.JFrame implements MouseListener {
 
     public void notFill() {
         fillCheck.setVisible(false);
+        fillLabel.setVisible(false);
+        fillRSlider.setVisible(false);
+        fillGSlider.setVisible(false);
+        fillBSlider.setVisible(false);
+        fillRLabel.setVisible(false);
+        fillRField.setVisible(false);
+        fillGLabel.setVisible(false);
+        fillGField.setVisible(false);
+        fillBLabel.setVisible(false);
+        fillBField.setVisible(false);
     }
 
     public void yesFill() {
         fillCheck.setVisible(true);
+        fillLabel.setVisible(true);
+        fillRSlider.setVisible(true);
+        fillGSlider.setVisible(true);
+        fillBSlider.setVisible(true);
+        fillRLabel.setVisible(true);
+        fillRField.setVisible(true);
+        fillGLabel.setVisible(true);
+        fillGField.setVisible(true);
+        fillBLabel.setVisible(true);
+        fillBField.setVisible(true);
     }
 
     public void selectedPolygon() {
