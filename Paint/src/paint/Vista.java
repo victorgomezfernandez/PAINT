@@ -259,14 +259,16 @@ public class Vista extends javax.swing.JFrame implements MouseListener {
         drawingsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane2.setViewportView(drawingsList);
 
-        addButton.setText("AGREGAR");
+        drawingField.setText("Nombre Dibujo");
+
+        addButton.setText("GUARDAR");
         addButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addButtonActionPerformed(evt);
             }
         });
 
-        deleteButton.setText("ELIMINAR");
+        deleteButton.setText("BORRAR");
         deleteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 deleteButtonActionPerformed(evt);
